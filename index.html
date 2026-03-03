@@ -28,6 +28,7 @@
             background-position: center;
             background-repeat: no-repeat;
             z-index: -2;
+            transition: opacity 0.5s ease;
         }
 
         .overlay {
@@ -164,7 +165,7 @@
         /* 新年快乐 */
         .new-year {
             position: fixed;
-            bottom: 140px;
+            bottom: 40px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 10;
@@ -248,21 +249,46 @@
         .weather {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             color: white;
             background: rgba(0, 0, 0, 0.25);
             backdrop-filter: blur(10px);
-            padding: 8px 16px;
+            padding: 10px 18px;
             border-radius: 10px;
+            min-width: 140px;
+            justify-content: center;
+        }
+
+        .weather-loading {
+            font-size: 14px;
+            opacity: 0.8;
         }
 
         .weather-icon svg {
-            width: 22px;
-            height: 22px;
+            width: 24px;
+            height: 24px;
         }
 
-        .weather-city, .weather-temp {
-            font-size: 15px;
+        .weather-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 2px;
+        }
+
+        .weather-city {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        .weather-temp {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .weather-desc {
+            font-size: 12px;
+            opacity: 0.8;
         }
 
         /* 主要内容 */
@@ -273,7 +299,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: calc(100vh - 200px);
+            min-height: calc(100vh - 100px);
             padding: 20px;
         }
 
@@ -357,7 +383,13 @@
             color: rgba(255, 255, 255, 0.95);
             max-width: 800px;
             padding: 0 20px;
-            transition: opacity 0.5s ease;
+            min-height: 80px;
+        }
+
+        .quote-loading {
+            font-size: 16px;
+            opacity: 0.7;
+            font-style: italic;
         }
 
         .quote-text {
@@ -365,67 +397,14 @@
             line-height: 1.8;
             font-style: italic;
             text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+            transition: opacity 0.5s ease;
         }
 
         .quote-source {
             margin-top: 12px;
             font-size: 15px;
             opacity: 0.75;
-        }
-
-        /* 页脚 */
-        footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            z-index: 30;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(12px);
-            padding: 12px 20px;
-            text-align: center;
-        }
-
-        .footer-content {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            align-items: center;
-            gap: 6px 10px;
-            font-size: 13px;
-            color: rgba(255, 255, 255, 0.75);
-        }
-
-        .footer-content a {
-            color: rgba(255, 255, 255, 0.75);
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-
-        .footer-content a:hover {
-            color: white;
-        }
-
-        .footer-content .divider {
-            color: rgba(255, 255, 255, 0.4);
-        }
-
-        .footer-copyright {
-            margin-top: 8px;
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.5);
-        }
-
-        .footer-copyright a {
-            color: rgba(255, 255, 255, 0.5);
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .footer-copyright a:hover {
-            color: rgba(255, 255, 255, 0.7);
+            transition: opacity 0.5s ease;
         }
 
         /* 响应式 */
@@ -475,12 +454,25 @@
                 font-size: 16px;
             }
 
+            .new-year {
+                bottom: 20px;
+            }
+
             .new-year span {
                 font-size: 32px;
             }
 
-            .footer-content {
+            .weather {
+                padding: 8px 12px;
+                min-width: auto;
+            }
+
+            .weather-city {
                 font-size: 11px;
+            }
+
+            .weather-temp {
+                font-size: 14px;
             }
         }
     </style>
@@ -542,14 +534,7 @@
             <span class="logo-text">高考鸭</span>
         </div>
         <div class="weather" id="weather">
-            <div class="weather-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M17.5 19c0-1.7-1.3-3-3-3c-1.1 0-2.1.6-2.6 1.5c-.5-.9-1.5-1.5-2.6-1.5c-1.7 0-3 1.3-3 3"/>
-                    <path d="M17.5 19H19a4 4 0 0 0 0-8h-1.3A6 6 0 0 0 6.3 11H5a4 4 0 0 0 0 8h1.5"/>
-                </svg>
-            </div>
-            <span class="weather-city" id="weatherCity">北京</span>
-            <span class="weather-temp" id="weatherTemp">8°</span>
+            <span class="weather-loading">加载中...</span>
         </div>
     </header>
 
@@ -562,102 +547,268 @@
                 <span class="label">年高考还有</span>
             </div>
             <div class="countdown-days">
-                <span class="number" id="days">95</span>
+                <span class="number" id="days">--</span>
                 <span class="unit">天</span>
             </div>
             <div class="countdown-time">
                 <div class="time-item">
-                    <span class="num" id="hours">00</span>
+                    <span class="num" id="hours">--</span>
                     <span class="unit">小时</span>
                 </div>
                 <div class="time-item">
-                    <span class="num" id="minutes">00</span>
+                    <span class="num" id="minutes">--</span>
                     <span class="unit">分</span>
                 </div>
                 <div class="time-item">
-                    <span class="num" id="seconds">00</span>
+                    <span class="num" id="seconds">--</span>
                     <span class="unit">秒</span>
                 </div>
             </div>
         </div>
 
         <div class="quote" id="quote">
-            <p class="quote-text" id="quoteText">若你困与无风之地，我将奏响高天之歌。</p>
-            <p class="quote-source" id="quoteSource">《原神》 --温迪</p>
+            <p class="quote-loading">正在获取今日语录...</p>
         </div>
     </main>
 
-    <!-- 页脚 -->
-    <footer>
-        <div class="footer-content">
-            <a href="https://www.alongsir.cn" target="_blank">洛杉小站</a>
-            <span class="divider">|</span>
-            <span>Website By</span>
-            <a href="https://oyiso.cn/" target="_blank">神秘布偶猫</a>
-            <span>&</span>
-            <span>LongSir</span>
-            <span class="divider">|</span>
-            <a href="https://beian.miit.gov.cn/" target="_blank">豫ICP备2022002591号-3</a>
-            <span class="divider">|</span>
-            <a href="#">前往旧版</a>
-            <span class="divider">|</span>
-            <a href="https://www.alongsir.cn/say" target="_blank">意见/问题反馈</a>
-            <span class="divider">|</span>
-            <a href="https://www.alongsir.cn/links" target="_blank">友情链接</a>
-            <span class="divider">|</span>
-            <a href="https://www.alongsir.cn/say" target="_blank">♡ 赞助我</a>
-            <span class="divider">|</span>
-            <span id="runtime">艰难的运行了：0年0天</span>
-        </div>
-        <div class="footer-copyright">
-            <a href="https://bing.com" target="_blank">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: inline-block; vertical-align: middle;">
-                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-                    <polyline points="15 3 21 3 21 9"/>
-                    <line x1="10" y1="14" x2="21" y2="3"/>
-                </svg>
-                Bing-必应每日壁纸
-            </a>
-            <span class="divider"> | </span>
-            <span>背景图片版权归属微软必应</span>
-        </div>
-    </footer>
-
     <script>
-        // 语录数据
-        const quotes = [
-            { text: "若你困与无风之地，我将奏响高天之歌。", source: "《原神》", author: "温迪" },
-            { text: "曾盛开过一朵，曾不会败落，曾在他眼中流淌过浩瀚的银河。", source: "《不痛》", author: "南语" },
-            { text: "星光不问赶路人，时光不负有心人。", source: "", author: "" },
-            { text: "乾坤未定，你我皆是黑马。", source: "", author: "" },
-            { text: "愿你以渺小启程，以伟大结束。", source: "", author: "" },
-            { text: "既然选择了远方，便只顾风雨兼程。", source: "《热爱生命》", author: "汪国真" },
-            { text: "没有比人更高的山，没有比脚更长的路。", source: "", author: "" },
-            { text: "你的负担将变成礼物，你受的苦将照亮你的路。", source: "", author: "泰戈尔" },
-            { text: "每一个不曾起舞的日子，都是对生命的辜负。", source: "", author: "尼采" },
-            { text: "追光的人，终会光芒万丈。", source: "", author: "" },
-        ];
+        // ========== 配置 ==========
+        const CONFIG = {
+            // 天气配置：湖南益阳安化县
+            weather: {
+                lat: 28.38,  // 安化县纬度
+                lon: 111.21, // 安化县经度
+                cityName: '安化'
+            },
+            // 高考日期：2026年6月7日 9:00
+            gaokaoDate: new Date(2026, 5, 7, 9, 0, 0)
+        };
 
-        // 天气数据
-        const weatherData = [
-            { city: "北京", temp: 8, icon: "cloudy" },
-            { city: "上海", temp: 12, icon: "rainy" },
-            { city: "广州", temp: 18, icon: "sunny" },
-            { city: "深圳", temp: 20, icon: "sunny" },
-            { city: "杭州", temp: 10, icon: "cloudy" },
-            { city: "成都", temp: 9, icon: "windy" },
-            { city: "武汉", temp: 7, icon: "cloudy" },
-            { city: "西安", temp: 6, icon: "sunny" },
-            { city: "南京", temp: 8, icon: "cloudy" },
-            { city: "重庆", temp: 11, icon: "cloudy" },
-        ];
-
-        // 初始化背景
-        function initBackground() {
-            const bg = document.getElementById('bg');
-            // 使用Bing每日壁纸
-            bg.style.backgroundImage = 'url(https://bing.img.run/1920x1080.php)';
+        // ========== 工具函数 ==========
+        
+        // 格式化数字
+        function pad(num) {
+            return num.toString().padStart(2, '0');
         }
+
+        // 获取天气图标
+        function getWeatherIcon(code) {
+            // WMO Weather interpretation codes
+            const icons = {
+                0: '☀️', // Clear sky
+                1: '🌤️', // Mainly clear
+                2: '⛅', // Partly cloudy
+                3: '☁️', // Overcast
+                45: '🌫️', // Fog
+                48: '🌫️', // Depositing rime fog
+                51: '🌦️', // Light drizzle
+                53: '🌦️', // Moderate drizzle
+                55: '🌧️', // Dense drizzle
+                61: '🌧️', // Slight rain
+                63: '🌧️', // Moderate rain
+                65: '🌧️', // Heavy rain
+                71: '🌨️', // Slight snow
+                73: '🌨️', // Moderate snow
+                75: '❄️', // Heavy snow
+                77: '🌨️', // Snow grains
+                80: '🌦️', // Slight rain showers
+                81: '🌧️', // Moderate rain showers
+                82: '⛈️', // Violent rain showers
+                85: '🌨️', // Slight snow showers
+                86: '❄️', // Heavy snow showers
+                95: '⛈️', // Thunderstorm
+                96: '⛈️', // Thunderstorm with slight hail
+                99: '⛈️', // Thunderstorm with heavy hail
+            };
+            return icons[code] || '🌡️';
+        }
+
+        // 获取天气描述
+        function getWeatherDesc(code) {
+            const descs = {
+                0: '晴朗',
+                1: ' mainly clear',
+                2: '多云',
+                3: '阴天',
+                45: '雾',
+                48: '雾凇',
+                51: '毛毛雨',
+                53: '中雨',
+                55: '大雨',
+                61: '小雨',
+                63: '中雨',
+                65: '大雨',
+                71: '小雪',
+                73: '中雪',
+                75: '大雪',
+                77: '雪粒',
+                80: '阵雨',
+                81: '中阵雨',
+                82: '强阵雨',
+                85: '阵雪',
+                86: '强阵雪',
+                95: '雷雨',
+                96: '雷暴伴冰雹',
+                99: '强雷暴',
+            };
+            return descs[code] || '未知';
+        }
+
+        // ========== 数据获取 ==========
+
+        // 1. 获取Bing每日壁纸
+        async function fetchBingWallpaper() {
+            try {
+                const bg = document.getElementById('bg');
+                // 使用多个Bing壁纸API源，增加可靠性
+                const sources = [
+                    'https://bing.img.run/1920x1080.php',
+                    'https://api.dujin.org/bing/1920.php',
+                    'https://bing.ee123.net/img/1920x1080'
+                ];
+                
+                // 随机选择一个源
+                const source = sources[Math.floor(Math.random() * sources.length)];
+                bg.style.backgroundImage = `url(${source})`;
+            } catch (error) {
+                console.error('获取壁纸失败:', error);
+                // 使用默认渐变背景
+                document.getElementById('bg').style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+            }
+        }
+
+        // 2. 获取天气数据（Open-Meteo免费API）
+        async function fetchWeather() {
+            const weatherEl = document.getElementById('weather');
+            
+            try {
+                const { lat, lon, cityName } = CONFIG.weather;
+                const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`;
+                
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('天气API请求失败');
+                
+                const data = await response.json();
+                const current = data.current_weather;
+                
+                weatherEl.innerHTML = `
+                    <div class="weather-icon">${getWeatherIcon(current.weathercode)}</div>
+                    <div class="weather-info">
+                        <span class="weather-city">${cityName}</span>
+                        <span class="weather-temp">${Math.round(current.temperature)}°C</span>
+                        <span class="weather-desc">${getWeatherDesc(current.weathercode)}</span>
+                    </div>
+                `;
+            } catch (error) {
+                console.error('获取天气失败:', error);
+                weatherEl.innerHTML = `
+                    <div class="weather-info">
+                        <span class="weather-city">${CONFIG.weather.cityName}</span>
+                        <span class="weather-temp">--°C</span>
+                    </div>
+                `;
+            }
+        }
+
+        // 3. 获取每日语录（使用多个API源）
+        async function fetchQuote() {
+            const quoteEl = document.getElementById('quote');
+            
+            // 备用语录
+            const fallbackQuotes = [
+                { text: "星光不问赶路人，时光不负有心人。", source: "", author: "" },
+                { text: "乾坤未定，你我皆是黑马。", source: "", author: "" },
+                { text: "愿你以渺小启程，以伟大结束。", source: "", author: "" },
+                { text: "既然选择了远方，便只顾风雨兼程。", source: "《热爱生命》", author: "汪国真" },
+                { text: "没有比人更高的山，没有比脚更长的路。", source: "", author: "" },
+            ];
+            
+            try {
+                // 尝试获取在线语录
+                const sources = [
+                    // 一言API
+                    async () => {
+                        const res = await fetch('https://v1.hitokoto.cn/?c=k&c=d&encode=json');
+                        const data = await res.json();
+                        return {
+                            text: data.hitokoto,
+                            source: data.from || '',
+                            author: data.from_who || ''
+                        };
+                    },
+                    // 备用：使用本地随机
+                    async () => {
+                        return fallbackQuotes[Math.floor(Math.random() * fallbackQuotes.length)];
+                    }
+                ];
+                
+                let quote = null;
+                for (const source of sources) {
+                    try {
+                        quote = await source();
+                        if (quote && quote.text) break;
+                    } catch (e) {
+                        continue;
+                    }
+                }
+                
+                if (!quote) {
+                    quote = fallbackQuotes[Math.floor(Math.random() * fallbackQuotes.length)];
+                }
+                
+                displayQuote(quote);
+                
+            } catch (error) {
+                console.error('获取语录失败:', error);
+                const randomQuote = fallbackQuotes[Math.floor(Math.random() * fallbackQuotes.length)];
+                displayQuote(randomQuote);
+            }
+        }
+
+        // 显示语录
+        function displayQuote(quote) {
+            const quoteEl = document.getElementById('quote');
+            
+            let sourceHtml = '';
+            if (quote.source || quote.author) {
+                let parts = [];
+                if (quote.source) parts.push(`《${quote.source}》`);
+                if (quote.author) parts.push(`--${quote.author}`);
+                sourceHtml = `<p class="quote-source">${parts.join(' ')}</p>`;
+            }
+            
+            quoteEl.innerHTML = `
+                <p class="quote-text">${quote.text}</p>
+                ${sourceHtml}
+            `;
+        }
+
+        // ========== 倒计时 ==========
+        
+        function updateCountdown() {
+            const now = new Date();
+            const diff = CONFIG.gaokaoDate - now;
+
+            if (diff <= 0) {
+                document.getElementById('days').textContent = '0';
+                document.getElementById('hours').textContent = '00';
+                document.getElementById('minutes').textContent = '00';
+                document.getElementById('seconds').textContent = '00';
+                return;
+            }
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById('days').textContent = days;
+            document.getElementById('hours').textContent = pad(hours);
+            document.getElementById('minutes').textContent = pad(minutes);
+            document.getElementById('seconds').textContent = pad(seconds);
+        }
+
+        // ========== 装饰效果 ==========
 
         // 初始化飘落花瓣
         function initPetals() {
@@ -684,95 +835,29 @@
             }
         }
 
-        // 初始化天气
-        function initWeather() {
-            const randomWeather = weatherData[Math.floor(Math.random() * weatherData.length)];
-            document.getElementById('weatherCity').textContent = randomWeather.city;
-            document.getElementById('weatherTemp').textContent = randomWeather.temp + '°';
-        }
+        // ========== 初始化 ==========
 
-        // 倒计时
-        function updateCountdown() {
-            const now = new Date();
-            const targetDate = new Date(2026, 5, 7, 9, 0, 0); // 2026年6月7日 9:00
-            const diff = targetDate - now;
-
-            if (diff <= 0) {
-                document.getElementById('days').textContent = '0';
-                document.getElementById('hours').textContent = '00';
-                document.getElementById('minutes').textContent = '00';
-                document.getElementById('seconds').textContent = '00';
-                return;
-            }
-
-            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-            document.getElementById('days').textContent = days;
-            document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
-            document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
-            document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
-        }
-
-        // 语录轮换
-        let currentQuoteIndex = 0;
-        function rotateQuote() {
-            const quoteEl = document.getElementById('quote');
-            const textEl = document.getElementById('quoteText');
-            const sourceEl = document.getElementById('quoteSource');
-            
-            quoteEl.style.opacity = '0';
-            
-            setTimeout(() => {
-                currentQuoteIndex = (currentQuoteIndex + 1) % quotes.length;
-                const quote = quotes[currentQuoteIndex];
-                textEl.textContent = quote.text;
-                
-                if (quote.source || quote.author) {
-                    let sourceText = '';
-                    if (quote.source) sourceText += `《${quote.source}》`;
-                    if (quote.author) sourceText += ` --${quote.author}`;
-                    sourceEl.textContent = sourceText;
-                    sourceEl.style.display = 'block';
-                } else {
-                    sourceEl.style.display = 'none';
-                }
-                
-                quoteEl.style.opacity = '1';
-            }, 500);
-        }
-
-        // 运行时间
-        function updateRuntime() {
-            const startDate = new Date('2023-03-03');
-            const now = new Date();
-            const diff = now - startDate;
-            
-            const years = Math.floor(diff / (1000 * 60 * 60 * 24 * 365));
-            const days = Math.floor((diff % (1000 * 60 * 60 * 24 * 365)) / (1000 * 60 * 60 * 24));
-            
-            document.getElementById('runtime').textContent = `艰难的运行了：${years}年${days}天`;
-        }
-
-        // 初始化
         document.addEventListener('DOMContentLoaded', function() {
-            initBackground();
+            // 初始化背景
+            fetchBingWallpaper();
+            
+            // 初始化装饰
             initPetals();
             checkNewYear();
-            initWeather();
-            updateCountdown();
-            updateRuntime();
             
-            // 每秒更新倒计时
+            // 获取在线数据
+            fetchWeather();
+            fetchQuote();
+            
+            // 启动倒计时
+            updateCountdown();
             setInterval(updateCountdown, 1000);
             
-            // 每30秒轮换语录
-            setInterval(rotateQuote, 30000);
+            // 每5分钟刷新天气
+            setInterval(fetchWeather, 5 * 60 * 1000);
             
-            // 每分钟更新运行时间
-            setInterval(updateRuntime, 60000);
+            // 每30分钟刷新语录
+            setInterval(fetchQuote, 30 * 60 * 1000);
         });
     </script>
 </body>
